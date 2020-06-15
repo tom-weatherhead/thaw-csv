@@ -5,7 +5,7 @@
 	"keywords": [
 		"TypeScript"
 	],
-	"private": true,
+	"private": false,
 	"homepage": "https://github.com/tom-weatherhead/thaw-csv#readme",
 	"repository": "github:tom-weatherhead/thaw-csv",
 	"bugs": {
