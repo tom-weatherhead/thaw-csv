@@ -2,7 +2,8 @@
 
 'use strict';
 
-import { ICsvFileContents, readCsvFile, writeCsvFile } from '../lib/main';
+// import { ICsvFileContents, readCsvFile, writeCsvFile } from '../lib/main';
+import { readCsvFile } from '../lib/main';
 
 test('Read testfile1.csv test', async () => {
 	expect.assertions(6);
