@@ -16,6 +16,20 @@ export interface ICsvFileContents {
 	readonly headers?: string[];
 }
 
+type encodingType =
+	| 'utf8'
+	| 'ascii'
+	| 'utf-8'
+	| 'utf16le'
+	| 'ucs2'
+	| 'ucs-2'
+	| 'base64'
+	| 'latin1'
+	| 'binary'
+	| 'hex'
+	| null
+	| undefined;
+
 class CsvFileContents implements ICsvFileContents {
 	public readonly data: string[][];
 	public readonly headers?: string[];
@@ -23,6 +37,14 @@ class CsvFileContents implements ICsvFileContents {
 	constructor(data: string[][], headers?: string[]) {
 		this.data = data;
 		this.headers = headers;
+	}
+}
+
+function ifDefinedThenElse<T>(valueIn: T | undefined, defaultOut: T): T {
+	if (typeof valueIn !== 'undefined') {
+		return valueIn;
+	} else {
+		return defaultOut;
 	}
 }
 
@@ -63,11 +85,14 @@ export async function writeCsvFile(
 	filePath: string,
 	dataToWrite: any[][],
 	options: {
+		encoding?: encodingType;
+		flag?: string;
 		headers?: string[];
+		mode?: number | string;
 	} = {}
 ): Promise<void> {
-	const dataToWriteAsString = dataToWrite.map((rowToWrite: any[]): string =>
-		rowToWrite.join()
+	const dataToWriteAsString = dataToWrite.map(
+		(rowToWrite: unknown[]): string => rowToWrite.join()
 	);
 
 	if (options.headers) {
@@ -75,8 +100,8 @@ export async function writeCsvFile(
 	}
 
 	await promisifiedWriteFile(filePath, dataToWriteAsString.join('\n'), {
-		encoding: 'utf8',
-		flag: 'a', // 'a' means appending (old data will be preserved)
-		mode: '0o644'
+		encoding: ifDefinedThenElse(options.encoding, 'utf8'),
+		flag: ifDefinedThenElse(options.flag, 'a'), // 'a' means append
+		mode: ifDefinedThenElse(options.mode, '0644')
 	});
 }
